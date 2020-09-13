@@ -1,0 +1,26 @@
+version: '3.3'
+
+networks:
+  app-tier:
+    driver: bridge
+
+services:
+
+  employeeApp:
+    image: employee
+    depends_on:
+      - db
+      - zookeeper
+      - kafka
+    ports:
+      - 8080:8080
+    environment:
+      spring.profiles.active: container
+      spring.datasource.url: jdbc:mysql://db:3306/emp?createDatabaseIfNotExist=true
+      spring.datasource.username: root
+      spring.datasource.password: password
+      kafka.bootstrapAddress: kafka:9092
+      kafka.employeeEvent.topic.name: employee-event-v1
+    networks:
+      - app-tier
+
